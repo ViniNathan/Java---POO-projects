@@ -4,13 +4,16 @@ public class Sinistro {
     private Integer id;
     private String data;
     private String endereco;
-
-    public Sinistro(Integer id, String data, String endereco) {
-        this.id = id;
+    private static Integer contador = 0; // Utilizado para que os IDS sejam unicos
+    
+    // Construtor
+    public Sinistro(String data, String endereco) {
+        this.id = contador++;
         this.data = data;
         this.endereco = endereco;
     }
 
+    // Getters e setters
     public Integer getId() {
         return id;
     }
@@ -34,7 +37,8 @@ public class Sinistro {
     public void setEndereco(String endereco) {
         this.endereco = endereco;
     }
-    
+
+
     // Padrão de "print"
     public String toString() {
         return "Sinistro{" +

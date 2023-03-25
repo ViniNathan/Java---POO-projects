@@ -5,12 +5,14 @@ public class Veiculo {
     private String marca;
     private String modelo;
 
+    // Construtor
     public Veiculo(String placa, String marca, String modelo) {
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
     }
 
+    // Getters e setters
     public String getPlaca() {
         return placa;
     }
