@@ -1,27 +1,25 @@
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 
 public class SeguroPF extends Seguro{
-	private Frota frota;
+	private Veiculo veiculo;
 	private ClientePF clientePF;
-	private ArrayList<Condutor> listaCondutores;
 	
 	// Construtor
-	public SeguroPF(Frota frota, ClientePF clientePF, Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal) {
+	public SeguroPF(Veiculo veiculo, ClientePF clientePF, Date dataInicio, Date dataFim, Seguradora seguradora, int valorMensal) {
 		super(dataInicio, dataFim, seguradora, valorMensal);
-		this.frota = frota;
+		this.veiculo = veiculo;
 		this.clientePF = clientePF;
 	}
 	
 	// Getters e Setters
-	public Frota getFrota() {
-		return frota;
+	public Veiculo getVeiculo() {
+		return veiculo;
 	}
 
-	public void setFrota(Frota frota) {
-		this.frota = frota;
+	public void setVeiculo(Veiculo veiculo) {
+		this.veiculo = veiculo;
 	}
 	
 	public ClientePF getClientePF() {
@@ -30,20 +28,12 @@ public class SeguroPF extends Seguro{
 
 	public void setEducacao(ClientePF clientePF) {
 		this.clientePF = clientePF;
-	}
-	
-    public ArrayList<Condutor> getListaCondutores() {
-        return listaCondutores;
-    }
-
-    public void setListaCondutores(ArrayList<Condutor> listaCondutores) {
-        this.listaCondutores = listaCondutores;
-    }
+	}	
 	
     // Método para autorizar um condutor
     public boolean autorizarCondutor(Condutor condutor) {
-        if (!listaCondutores.contains(condutor)) { // Verifica se o condutor não está cadastrado na lista de condutores do seguro
-            listaCondutores.add(condutor);
+        if (!super.getListaCondutores().contains(condutor)) { // Verifica se o condutor não está cadastrado na lista de condutores do seguro
+            super.getListaCondutores().add(condutor);
             return true; // Condutor autorizado com sucesso
         }
         return false; // Condutor não encontrado
@@ -51,8 +41,8 @@ public class SeguroPF extends Seguro{
 
     // Método para desautorizar um condutor
     public boolean DesautorizarCondutor(Condutor condutor) {
-        if (listaCondutores.contains(condutor)) { // Verifica se o condutor não está cadastrado na lista de condutores do seguro
-            listaCondutores.remove(condutor);
+        if (super.getListaCondutores().contains(condutor)) { // Verifica se o condutor não está cadastrado na lista de condutores do seguro
+            super.getListaCondutores().remove(condutor);
             return true; // Condutor desautorizado
         }
         return false; // Condutor não encontrado
@@ -105,7 +95,7 @@ public class SeguroPF extends Seguro{
 	
     public String toString() {
         String output = super.toString(); 
-        output += "Frota: " + frota + "\n";
+        output += "Veiculo: " + veiculo + "\n";
         output += "Cliente PF: " + clientePF + "\n";
         return output;
     }

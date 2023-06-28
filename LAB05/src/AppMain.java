@@ -3,7 +3,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
 public class AppMain {
@@ -91,12 +90,16 @@ public class AppMain {
         }
         
 
-        // Instanciando um objeto Frota
+        // Instanciando objetos Frota
+        ArrayList<Veiculo> frotaPF = new ArrayList<>();
+        frotaPF.add(veiculo1);
+        
         ArrayList<Veiculo> frotaVeiculos = new ArrayList<>();
         frotaVeiculos.add(veiculo2);
         frotaVeiculos.add(veiculo3);
         frotaVeiculos.add(veiculo4);
         Frota frota = new Frota("Frota de viagens", frotaVeiculos);
+        Frota frota1 = new Frota("Frota PF", frotaPF);
         
         // Adicionando os veiculos à lista de veiculos dos clientes 1 e 2
         cliente1.getListaVeiculos().add(veiculo1);
@@ -127,13 +130,14 @@ public class AppMain {
         listaCondutores.add(condutor3);
         listaCondutores.add(condutor4);
         
-        Seguro seguro1 = new Seguro(dataInicio, dataFim, seguradora, valorMensal);
-        
-		seguradora.gerarSeguro(dataInicio, dataFim, listaCondutores, valorMensal);
-		seguro1.gerarSinistro(dataInicio, "Rua Nãosei, 1209", condutor2);
-		seguro1.gerarSinistro(dataInicio, "Rua ABCDE, 439", condutor3);
-		seguro1.gerarSinistro(dataInicio, "Rua São Bartolomeu, 23", condutor4);
-
+		Seguro seguroPF = seguradora.gerarSeguro(dataInicio, dataFim, cliente1, frota1, valorMensal, "PF"); // Gerando um seguro PF
+		seguroPF.gerarSinistro(dataInicio, "Rua Teste, 1209", condutor1);
+		
+		Seguro seguroPJ = seguradora.gerarSeguro(dataInicio, dataFim, cliente2, frota, valorMensal, "PJ"); // Gerando um seguro PF
+		seguroPJ.gerarSinistro(dataInicio, "Rua Teste, 1209", condutor2);
+		seguroPJ.gerarSinistro(dataInicio, "Rua Oliveira da Silva, 439", condutor3);
+		seguroPJ.gerarSinistro(dataInicio, "Rua São Bartolomeu, 23", condutor4);
+		
 		
         do {
             exibirMenuPrincipal();
@@ -152,7 +156,7 @@ public class AppMain {
                     menuExcluir(scanner, cliente1, seguradora);
                     break;
                 case 4:
-                    gerarSinistro(seguradora, condutor1, seguro1);
+                    gerarSinistro(seguradora, condutor1, seguroPF);
                     break;
                 case 5:
                     calcularReceitaSeguradora(seguradora);                
@@ -180,17 +184,17 @@ public class AppMain {
     
     private static void gerarSinistro(Seguradora seguradora, Condutor condutor1, Seguro seguro1) {
         System.out.println("Opção 4 - Gerar Sinistro");
-        Scanner scanner = new Scanner(System.in);
-      
-        System.out.print("Data: ");
-        String dataStr = scanner.nextLine();
-        Date data = parseData(dataStr);
-        
-        System.out.print("Endereço: ");
-        String endereco = scanner.nextLine();
+        try (Scanner scanner = new Scanner(System.in)) {
+			System.out.print("Data: ");
+			String dataStr = scanner.nextLine();
+			Date data = parseData(dataStr);
+			
+			System.out.print("Endereço: ");
+			String endereco = scanner.nextLine();
   
-        seguro1.gerarSinistro(data, endereco, condutor1);
-        
+			seguro1.gerarSinistro(data, endereco, condutor1);
+		}
+      
         System.out.println("Sinistro gerado com sucesso");
     }
 
@@ -219,10 +223,10 @@ public class AppMain {
                     MenuCadastrarCliente(scanner, seguradora);
                     break;
                 case 2:	
-					cadastrarVeiculo(cliente);
+					cadastrarVeiculo(scanner, cliente);
                     break;
                 case 3:
-                    cadastrarSeguradora(listaSeguradoras);
+                    cadastrarSeguradora(scanner, listaSeguradoras);
                     break;
                 case 4:
                     System.out.println("Voltando ao menu principal...");
@@ -256,10 +260,10 @@ public class AppMain {
             scanner.nextLine(); // Limpar o buffer do scanner
             switch (escolha) {
             case 1:
-                cadastrarClientePF(seguradora);
+                cadastrarClientePF(scanner, seguradora);
                 break;
             case 2:
-                cadastrarClientePJ(seguradora);
+                cadastrarClientePJ(scanner, seguradora);
                 break;
             case 3:
                 System.out.println("Voltando ao menu anterior");
@@ -271,81 +275,77 @@ public class AppMain {
     	} while (escolha != 3);
     }
 
-    private static void cadastrarClientePF(Seguradora seguradora) {
-        Scanner scanner = new Scanner(System.in);
+    private static void cadastrarClientePF(Scanner scanner, Seguradora seguradora) {
+			System.out.println("----- Cadastro de Cliente PF -----");
+			System.out.print("Nome: ");
+			String nome = scanner.nextLine();
 
-        System.out.println("----- Cadastro de Cliente PF -----");
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine();
+			System.out.print("Telefone: ");
+			String telefone = scanner.nextLine();
+			
+			System.out.print("Endereço: ");
+			String endereco = scanner.nextLine();
+			
+			System.out.print("Email: ");
+			String email = scanner.nextLine();
+			
+			System.out.print("CPF: ");
+			String cpf = scanner.nextLine();
+			
+			System.out.print("Gênero: ");
+			String genero = scanner.nextLine();
+			
+			System.out.print("Educação: ");
+			String educacao = scanner.nextLine();
+			
+			System.out.print("Data de Nascimento (dd/mm/aaaa): ");
+			String dataNascimentoStr = scanner.nextLine();
+			Date dataNascimento = parseData(dataNascimentoStr);
 
-        System.out.print("Telefone: ");
-        String telefone = scanner.nextLine();
-        
-        System.out.print("Endereço: ");
-        String endereco = scanner.nextLine();
-        
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
-        
-        System.out.print("CPF: ");
-        String cpf = scanner.nextLine();
-        
-        System.out.print("Gênero: ");
-        String genero = scanner.nextLine();
-        
-        System.out.print("Educação: ");
-        String educacao = scanner.nextLine();
-        
-        System.out.print("Data de Nascimento (dd/mm/aaaa): ");
-        String dataNascimentoStr = scanner.nextLine();
-        Date dataNascimento = parseData(dataNascimentoStr);
+			// Cria a lista de veículos vazia para o cliente PF
+			ArrayList<Veiculo> listaVeiculos = new ArrayList<>();
 
-        // Cria a lista de veículos vazia para o cliente PF
-        ArrayList<Veiculo> listaVeiculos = new ArrayList<>();
+			// Cria o objeto ClientePF com os dados fornecidos
+			ClientePF clientePF = new ClientePF(nome, telefone, endereco, email, cpf, genero, educacao, dataNascimento, listaVeiculos);
 
-        // Cria o objeto ClientePF com os dados fornecidos
-        ClientePF clientePF = new ClientePF(nome, telefone, endereco, email, cpf, genero, educacao, dataNascimento, listaVeiculos);
-
-		// Adiciona o cliente PF à lista de clientes da seguradora
-        seguradora.cadastrarCliente(clientePF);
+			// Adiciona o cliente PF à lista de clientes da seguradora
+			seguradora.cadastrarCliente(clientePF);
 
         System.out.println("Cliente PF cadastrado com sucesso!");
 
     }
 		
 
-	private static void cadastrarClientePJ(Seguradora seguradora) {
-	    Scanner scanner = new Scanner(System.in);
-	    
-	
-	    System.out.println("----- Cadastro de Cliente PJ -----");
-	    System.out.print("Nome da empresa: ");
-	    String nome = scanner.nextLine();
-	    
-	    System.out.print("Telefone: ");
-	    String telefone = scanner.nextLine();
-	
-	    System.out.print("Endereço: ");
-	    String endereco = scanner.nextLine();
-	
-	    System.out.print("Email: ");
-	    String email = scanner.nextLine();
-	    
-	    System.out.print("CNPJ: ");
-	    String cnpj = scanner.nextLine();
-	
-	    System.out.print("Data de Fundação (dd/mm/aaaa): ");
-	    String dataFundacaoStr = scanner.nextLine();
-	    Date dataFundacao = parseData(dataFundacaoStr);
-	    
-	    // Cria a lista de veículos vazia para o cliente PJ
-	    ArrayList<Frota> listaFrota = new ArrayList<>();
-	
-	    // Cria o objeto ClientePJ com os dados fornecidos
-	    ClientePJ clientePJ = new ClientePJ(nome, telefone, endereco, email, cnpj, dataFundacao, listaFrota);	    
-	    // Adiciona o cliente PJ à lista de clientes da seguradora
-	    seguradora.cadastrarCliente(clientePJ);
+	private static void cadastrarClientePJ(Scanner scanner, Seguradora seguradora) {
+			System.out.println("----- Cadastro de Cliente PJ -----");
+			System.out.print("Nome da empresa: ");
+			String nome = scanner.nextLine();
+			
+			System.out.print("Telefone: ");
+			String telefone = scanner.nextLine();
 
+			System.out.print("Endereço: ");
+			String endereco = scanner.nextLine();
+
+			System.out.print("Email: ");
+			String email = scanner.nextLine();
+			
+			System.out.print("CNPJ: ");
+			String cnpj = scanner.nextLine();
+
+			System.out.print("Data de Fundação (dd/mm/aaaa): ");
+			String dataFundacaoStr = scanner.nextLine();
+			Date dataFundacao = parseData(dataFundacaoStr);
+			
+			// Cria a lista de veículos vazia para o cliente PJ
+			ArrayList<Frota> listaFrota = new ArrayList<>();
+
+			// Cria o objeto ClientePJ com os dados fornecidos
+			ClientePJ clientePJ = new ClientePJ(nome, telefone, endereco, email, cnpj, dataFundacao, listaFrota);	    
+			// Adiciona o cliente PJ à lista de clientes da seguradora
+			seguradora.cadastrarCliente(clientePJ);
+	    
+	
 	    System.out.println("Cliente PJ cadastrado com sucesso!");
 
 	}
@@ -360,62 +360,58 @@ public class AppMain {
 	    }
 	}
 
-	private static void cadastrarVeiculo(Cliente cliente) {
-        Scanner scanner = new Scanner(System.in);
-    	
-        System.out.println("Opção 2 - Cadastrar Veiculo");
-	    System.out.print("Placa: ");
-	    String placa = scanner.nextLine();
-	
-	    System.out.print("Marca: ");
-	    String marca = scanner.nextLine();
-	
-	    System.out.print("Modelo: ");
-	    String modelo = scanner.nextLine();
-	
-	    System.out.print("Ano de fabricação: ");
-	    int anoFabricacao = scanner.nextInt();
+	private static void cadastrarVeiculo(Scanner scanner, Cliente cliente) {
+			System.out.println("Opção 2 - Cadastrar Veiculo");
+			System.out.print("Placa: ");
+			String placa = scanner.nextLine();
 
-	    // Cria o objeto veiculo com os dados fornecidos
-	    Veiculo veiculo = new Veiculo(placa, marca, modelo, anoFabricacao);
-	    // Adiciona o veiculo à lista de veiculos do cliente
-	    if (cliente instanceof ClientePF) {
-	    	ClientePF clientePF = (ClientePF) cliente; // Faz a conversão do tipo Cliente para ClientePF
-			clientePF.getListaVeiculos().add(veiculo);
-	    }
-	    if (cliente instanceof ClientePJ) {
-	    	ClientePJ clientePJ = (ClientePJ) cliente; // Faz a conversão do tipo Cliente para ClientePJ
-		    System.out.print("Código da frota: ");
-		    String code = scanner.nextLine();
-		    ArrayList<Veiculo> listaVeiculos = new ArrayList<>();
-		    listaVeiculos.add(veiculo);
-		    Frota frota = new Frota(code, listaVeiculos);
-	    	clientePJ.getListaFrota().add(frota);
-	    }
+			System.out.print("Marca: ");
+			String marca = scanner.nextLine();
+
+			System.out.print("Modelo: ");
+			String modelo = scanner.nextLine();
+
+			System.out.print("Ano de fabricação: ");
+			int anoFabricacao = scanner.nextInt();
+
+			// Cria o objeto veiculo com os dados fornecidos
+			Veiculo veiculo = new Veiculo(placa, marca, modelo, anoFabricacao);
+			// Adiciona o veiculo à lista de veiculos do cliente
+			if (cliente instanceof ClientePF) {
+				ClientePF clientePF = (ClientePF) cliente; // Faz a conversão do tipo Cliente para ClientePF
+				clientePF.getListaVeiculos().add(veiculo);
+			}
+			if (cliente instanceof ClientePJ) {
+				ClientePJ clientePJ = (ClientePJ) cliente; // Faz a conversão do tipo Cliente para ClientePJ
+			    System.out.print("Código da frota: ");
+			    String code = scanner.nextLine();
+			    ArrayList<Veiculo> listaVeiculos = new ArrayList<>();
+			    listaVeiculos.add(veiculo);
+			    Frota frota = new Frota(code, listaVeiculos);
+				clientePJ.getListaFrota().add(frota);
+			}
 
     }
 
-    private static void cadastrarSeguradora(ArrayList<Seguradora> listaSeguradoras) {
+    private static void cadastrarSeguradora(Scanner scanner, ArrayList<Seguradora> listaSeguradoras) {
         System.out.println("Opção 3 - Cadastrar Seguradora");
-        Scanner scanner = new Scanner(System.in);
+			System.out.print("Cnpj: ");
+			String cnpj = scanner.nextLine();
+			
+			System.out.print("Nome: ");
+			String nome = scanner.nextLine();
 
-        System.out.print("Cnpj: ");
-	    String cnpj = scanner.nextLine();
-        
-        System.out.print("Nome: ");
-	    String nome = scanner.nextLine();
-	
-	    System.out.print("Telefone: ");
-	    String telefone = scanner.nextLine();
-	
-	    System.out.print("Endereço: ");
-	    String endereco = scanner.nextLine();
-	    
-	    System.out.print("Email: ");
-	    String email = scanner.nextLine();
-        
-	    Seguradora seguradora = new Seguradora(cnpj, nome, telefone, email, endereco);
-	    listaSeguradoras.add(seguradora);
+			System.out.print("Telefone: ");
+			String telefone = scanner.nextLine();
+
+			System.out.print("Endereço: ");
+			String endereco = scanner.nextLine();
+			
+			System.out.print("Email: ");
+			String email = scanner.nextLine();
+			
+			Seguradora seguradora = new Seguradora(cnpj, nome, telefone, email, endereco);
+			listaSeguradoras.add(seguradora);
 
     }
 
@@ -436,10 +432,10 @@ public class AppMain {
                     listarSinistrosSeguradora(seguradora, listaSeguradoras);
                     break;
                 case 3:
-                    listarSinistrosCliente(seguradora, cliente);
+                    listarSinistrosCliente(seguradora);
                     break;
                 case 4:
-                    listarVeiculosCliente(seguradora, cliente);
+                    listarVeiculosCliente(seguradora);
                     break;
                 case 5:
                     listarVeiculosSeguradora(seguradora, listaSeguradoras, cliente);
@@ -478,23 +474,24 @@ public class AppMain {
         }
     }
 
-    private static void listarSinistrosCliente(Seguradora seguradora, Cliente cliente) {
+    private static void listarSinistrosCliente(Seguradora seguradora) {
         System.out.println("Opção 3 - Listar Sinistros por Cliente");
-        for(Cliente cliente1 : seguradora.getListaClientes()) {
-        	System.out.println(seguradora.getSinistrosPorCliente(cliente1.getNome()));
+        for(Cliente cliente : seguradora.getListaClientes()) {
+        	System.out.println(seguradora.getSinistrosPorCliente(cliente.getNome()));
         }
     }
     
-    private static void listarVeiculosCliente(Seguradora seguradora, Cliente cliente) {
+    
+    private static void listarVeiculosCliente(Seguradora seguradora) {
         System.out.println("Opção 4 - Listar Veiculos por Cliente");
-        for(Cliente cliente1 : seguradora.getListaClientes()) {
-        	System.out.println("Cliente: " + cliente1.getNome());
-        	if (cliente1 instanceof ClientePF) {
-    	    	ClientePF clientePF = (ClientePF) cliente1; // Faz a conversão do tipo Cliente para ClientePF
+        for(Cliente cliente : seguradora.getListaClientes()) {
+        	System.out.println("Cliente: " + cliente.getNome());
+        	if (cliente instanceof ClientePF) {
+    	    	ClientePF clientePF = (ClientePF) cliente; // Faz a conversão do tipo Cliente para ClientePF
     	    	System.out.println(clientePF.getListaVeiculos());
     	    }
-        	if (cliente1 instanceof ClientePJ) {
-    	    	ClientePJ clientePJ = (ClientePJ) cliente1; // Faz a conversão do tipo Cliente para ClientePJ
+        	if (cliente instanceof ClientePJ) {
+    	    	ClientePJ clientePJ = (ClientePJ) cliente; // Faz a conversão do tipo Cliente para ClientePJ
     	    	ArrayList <Frota> ListaFrota = clientePJ.getListaFrota();
     	    	for(Frota frota : ListaFrota) {
     	    		System.out.println(frota.getListaVeiculos());
@@ -534,10 +531,10 @@ public class AppMain {
             // Executar a operação de cadastro escolhida
             switch (escolha) {
                 case 1:
-                    excluirCliente(seguradora);
+                    excluirCliente(scanner, seguradora);
                     break;
                 case 2:
-                    excluirVeiculo(cliente);
+                    excluirVeiculo(scanner, cliente);
                     break;
                 case 3:
                     System.out.println("Voltando ao menu principal...");
@@ -558,28 +555,32 @@ public class AppMain {
         System.out.print("Escolha uma opção: ");
     }
 
-    private static void excluirCliente(Seguradora seguradora) {
+    private static void excluirCliente(Scanner scanner, Seguradora seguradora) {
         System.out.println("Opção 1 - Excluir Cliente");
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("Nome do cliente a ser removido: ");
-	    String nome = scanner.nextLine();
-	    
-        seguradora.removerCliente(nome);
-        System.out.println("Cliente " + nome + " removido com sucesso");
+			System.out.println("Nome do cliente a ser removido: ");
+			String nome = scanner.nextLine();
+			Cliente cliente = seguradora.encontrarClientePorNome(nome);
+			if(seguradora.getListaClientes().contains(cliente)) {
+				seguradora.removerCliente(nome);
+				System.out.println("Cliente " + nome + " removido com sucesso");
+			} else {
+				System.out.println("Cliente não encontrado.");
+			}
+			
     }
 
-    private static void excluirVeiculo(Cliente cliente) {
+    private static void excluirVeiculo(Scanner scanner, Cliente cliente) {
         System.out.println("Opção 2 - Excluir Veiculo");
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("Placa do veiculo a ser removido: ");
-        String placa = scanner.nextLine();
-        if (cliente instanceof ClientePF) {
-	    	ClientePF clientePF = (ClientePF) cliente; // Faz a conversão do tipo Cliente para ClientePF
-	    	clientePF.removerVeiculo(placa);
-        }
-        System.out.println("Veiculo " + placa + " removido com sucesso");
+			System.out.println("Placa do veiculo a ser removido: ");
+			String placa = scanner.nextLine();
+			if (cliente instanceof ClientePF) {
+				ClientePF clientePF = (ClientePF) cliente; // Faz a conversão do tipo Cliente para ClientePF
+				clientePF.removerVeiculo(placa);
+				System.out.println("Veiculo " + placa + " removido com sucesso");
+			}
+			else {
+				System.out.println("Veiculo não encontrado");
+			}
     }
 
 }

@@ -99,15 +99,28 @@ public class Seguradora {
     
     
     // Método para gerar seguro
-    public boolean gerarSeguro(Date dataInicio, Date dataFim, ArrayList<Condutor> listaCondutores, int valorMensal) {
-		// Gera o seguro e add na lista de seguros
-    	Seguro seguro = new Seguro(dataInicio, dataFim, this, valorMensal);
-    	if (!listaSeguros.contains(seguro)) {
-    		listaSeguros.add(seguro);
-    		return true; 
-    	}
-    	return false;
+    public Seguro gerarSeguro(Date dataInicio, Date dataFim, Cliente cliente, Frota frota, int valorMensal, String tipoSeguro) {
+        if (tipoSeguro.equalsIgnoreCase("PF")) {
+            ClientePF clientePF = (ClientePF) cliente;
+            for (Veiculo veiculo : frota.getListaVeiculos()) {
+                Seguro seguro = new SeguroPF(veiculo, clientePF, dataInicio, dataFim, this, valorMensal);
+                listaSeguros.add(seguro); // Adiciona o seguro à lista de seguros da seguradora
+                return seguro;
+            }
+        } else if (tipoSeguro.equalsIgnoreCase("PJ")) {
+            ClientePJ clientePJ = (ClientePJ) cliente;
+            Seguro seguro = new SeguroPJ(frota, clientePJ, dataInicio, dataFim, this, valorMensal);
+            listaSeguros.add(seguro); // Adiciona o seguro à lista de seguros da seguradora
+            return seguro;
+        } else {
+            throw new IllegalArgumentException("Tipo de seguro inválido. Escolha entre PF ou PJ.");
+        }
+     
+        throw new IllegalArgumentException("Não foi possível gerar o seguro.");
     }
+
+
+
     
     // Método para cancelar seguro
     public boolean cancelarSeguro(int id) {
@@ -184,7 +197,16 @@ public class Seguradora {
         return sinistrosCliente;
     }
     
-    
+    // Método para encontrar um cliente na lista pelo nome
+    public Cliente encontrarClientePorNome(String nome) {
+        for (Cliente cliente : listaClientes) {
+            if (cliente.getNome().equalsIgnoreCase(nome)) {
+                return cliente; // Retorna o cliente encontrado
+            }
+        }
+        return null; // Retorna null caso o cliente não seja encontrado
+    }
+
 
     // Método para calcular receita
     public double calcularReceita() {

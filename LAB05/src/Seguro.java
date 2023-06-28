@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Seguro {
+public abstract class Seguro {
 	private static int contador = 0;
 	private final int id;
 	private Date dataInicio;
@@ -97,6 +97,7 @@ public class Seguro {
         Sinistro sinistro = new Sinistro(data, endereco, condutor, this);
         if (!listaSinistros.contains(sinistro)) {
         	listaSinistros.add(sinistro);
+        	System.out.println(listaSinistros);
         	return true; // Sinistro gerado
         }
         	return false;
